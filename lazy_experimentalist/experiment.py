@@ -1,21 +1,7 @@
 import argparse
 import ast
-from typing import List
 
-from lazy_experimentalist.job import Job
 from lazy_experimentalist.jobs_generator import generate_jobs
-
-
-def collect_jobs(base_cmd: str,
-                 output_path_pname: str,
-                 output_path: str,
-                 params: dict
-                 ) -> List[Job]:
-  out = []
-  for job in generate_jobs(base_cmd, output_path_pname, output_path, params):
-    print("Found {}".format(job))
-    out.append(job)
-  return out
 
 
 def main():
