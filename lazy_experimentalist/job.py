@@ -1,3 +1,4 @@
+import os.path as path
 from dataclasses import dataclass
 from subprocess import Popen, TimeoutExpired
 from typing import Optional
@@ -13,11 +14,16 @@ class Job:
 
   def launch(self):
     print("Launching {}!".format(self.__repr__()))
+    params_name = ''.join('_{}-{}'.format(key, val)
+                          for key, val in self.params.items())
+    params_name = params_name[1:]
+    output_path = str(path.join(self.output_path, params_name))
     cmd = (self.base_cmd +
-           '--{} {}'.format(self.output_path_pname, self.output_path) +
-           str('--{} {}'.format(key, value) for key, value in
-               self.params.items()))
-    self.process = Popen(cmd)
+           ' --{} {} '.format(self.output_path_pname, output_path) +
+           ''.join('--{} {} '.format(key, value) for key, value in
+                   self.params.items()))
+    cmd = cmd[:-1]
+    self.process = Popen(cmd, shell=True)
 
   def close(self, wait: float):
     if self.process is not None:

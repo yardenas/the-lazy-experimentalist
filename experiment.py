@@ -16,14 +16,14 @@ def main():
                       help='A python-typed dictionary that maps between a '
                            'parameter name and all of it\'s wanted possible '
                            'values')
-  parser.add_argument('-t', '--timeout', default=5,
+  parser.add_argument('-t', '--timeout', default=5, type=float,
                       help='Time [sec] that jobs should run, or terminated '
                            'otherwise')
   args = parser.parse_args()
   jobs = []
   for job in generate_jobs(args.base_cmd, args.output_path_pname,
                            args.base_output_path, args.params):
-    jobs.append(jobs)
+    jobs.append(job)
     job.launch()
   for job in jobs:
     job.close(args.timeout)
