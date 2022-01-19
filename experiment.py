@@ -1,5 +1,6 @@
 import argparse
 import ast
+import time
 
 from lazy_experimentalist.jobs_generator import generate_jobs
 
@@ -20,13 +21,36 @@ def main():
                       help='Time [sec] that jobs should run, or terminated '
                            'otherwise')
   args = parser.parse_args()
-  jobs = []
+  jobs = set()
   for job in generate_jobs(args.base_cmd, args.output_path_pname,
                            args.base_output_path, args.params):
-    jobs.append(job)
+    jobs.add(job)
     job.launch()
-  for job in jobs:
-    job.close(args.timeout)
+  finished_ok = set()
+  failed = set()
+  while jobs:
+    time.sleep(60)
+    for job in jobs:
+      return_code = job.poll()
+      # Job is still running, let it run.
+      if return_code is None:
+        continue
+      # Job finished ok, add to finished jobs.
+      elif return_code == 0:
+        finished_ok.add(job)
+        jobs.remove(job)
+      # Job needs more time to run, relaunch.
+      elif return_code == 140:
+        job.launch()
+      # Job failed.
+      else:
+        failed.add(job)
+        jobs.remove(job)
+  print('Done...!')
+  if finished_ok:
+    print('The following jobs finished successfully:', *finished_ok, sep='\n')
+  if failed:
+    print('The following jobs failed:', *failed, sep='\n')
 
 
 if __name__ == '__main__':
