@@ -24,7 +24,7 @@ class BsubProcess:
 
   def poll(self) -> Union[int, None]:
     job_info = sp.check_output(["bjobs", "-w", self.job_id]).decode().strip()
-    if job_info.split(None, 7)[2] == 'RUN':
+    if job_info.split(None, 7)[2] in ['RUN', 'PEND']:
       return None
     if job_info.split(None, 7)[2] == 'DONE':
       return 0
