@@ -1,4 +1,3 @@
-import signal
 import subprocess as sp
 import sys
 import time
@@ -24,9 +23,9 @@ class BsubProcess:
 
   def poll(self) -> Union[int, None]:
     job_info = (sp.check_output(["bjobs", "-w", self.job_id])
-                .decode()
-                .strip()
-                .split('\n')[1])
+      .decode()
+      .strip()
+      .split('\n')[1])
     print("Job info {}".format(job_info))
     if job_info.split(None, 7)[2] in ['RUN', 'PEND']:
       return None
@@ -44,12 +43,13 @@ class BsubProcess:
       return int(verbose_info[error_code_start_idx:error_code_end_idx])
 
   def wait(self, timeout=None) -> int:
-    while True:
-      return_code = self.poll()
-      if return_code is None:
-        time.sleep(60)
-      else:
-        return return_code
+    with _timeout(timeout) as timeout_notifier:
+      while True:
+        return_code = self.poll()
+        if return_code is None and not timeout_notifier():
+          time.sleep(60)
+        else:
+          return return_code
 
   def terminate(self):
     sp.run(["bkill", self.job_id])
@@ -57,7 +57,15 @@ class BsubProcess:
 
 @contextmanager
 def _timeout(timeout):
+  timeout += time.time()
+
+  def nudger():
+    if time.time() > timeout:
+      raise sp.TimeoutExpired
+    else:
+      return False
+
   try:
-    yield
+    yield nudger()
   finally:
     pass
