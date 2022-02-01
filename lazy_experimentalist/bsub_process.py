@@ -27,6 +27,7 @@ class BsubProcess:
                 .decode()
                 .strip()
                 .split('\n')[1])
+    print("Job info {}".format(job_info))
     if job_info.split(None, 7)[2] in ['RUN', 'PEND']:
       return None
     if job_info.split(None, 7)[2] == 'DONE':
@@ -34,7 +35,7 @@ class BsubProcess:
     elif job_info.split(None, 7)[2] == 'EXIT':
       verbose_info = (sp.check_output(["bjobs", "-l", self.job_id])
                       .decode()
-                      .rstrip())
+                      .strip())
       exit_str = 'Exited with exit code'
       error_code_start_idx = verbose_info.find(exit_str) + len(exit_str) + 1
       error_code_end_idx = error_code_start_idx

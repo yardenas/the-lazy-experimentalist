@@ -7,7 +7,7 @@ from typing import Optional, Callable, Any
 def check_processs(fun: Callable) -> Callable:
   def wrap(job, *args, **kwargs):
     if job.process is not None:
-      fun(job, *args, **kwargs)
+      return fun(job, *args, **kwargs)
     else:
       print("Job: {} was not launched yet.".format(job))
 
