@@ -49,6 +49,7 @@ def main():
         continue
       # Job finished ok, add to finished jobs.
       elif return_code == 0:
+        print("Job {} finished successfully".format(job))
         finished_ok.add(job)
         jobs.remove(job)
       # Job crashed due to user error.
