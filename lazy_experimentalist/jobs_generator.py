@@ -24,6 +24,7 @@ def generate_jobs(
                 else partial(Popen, shell=True))
   if not params:
     yield Job(base_cmd, output_path_pname, output_path, {}, process_fn)
+    return
   for combination in product(*params.values()):
     combination_params = dict(zip(params.keys(), combination))
     yield Job(base_cmd, output_path_pname, output_path, combination_params,

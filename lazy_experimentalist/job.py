@@ -50,3 +50,6 @@ class Job:
       print("Timed out while waiting for job: {}. Terminating it..."
             .format(self.__repr__()))
       self.process.terminate()
+
+  def __hash__(self):
+    return hash(self.params)
