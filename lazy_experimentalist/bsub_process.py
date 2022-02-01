@@ -44,14 +44,12 @@ class BsubProcess:
       return int(verbose_info[error_code_start_idx:error_code_end_idx])
 
   def wait(self, timeout=None) -> int:
-    with _timeout(timeout or 0):
-      sleep_time = 60
-      while True:
-        return_code = self.poll()
-        if return_code is None:
-          time.sleep(sleep_time)
-        else:
-          return return_code
+    while True:
+      return_code = self.poll()
+      if return_code is None:
+        time.sleep(60)
+      else:
+        return return_code
 
   def terminate(self):
     sp.run(["bkill", self.job_id])
@@ -59,12 +57,7 @@ class BsubProcess:
 
 @contextmanager
 def _timeout(timeout):
-  def handle_timeout(*_):
-    raise TimeoutError
-
-  signal.signal(signal.SIGALRM, handle_timeout)
-  signal.alarm(timeout)
   try:
     yield
   finally:
-    signal.signal(signal.SIGALRM, signal.SIG_IGN)
+    pass
