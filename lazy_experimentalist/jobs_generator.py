@@ -22,6 +22,8 @@ def generate_jobs(
   process_fn = (BsubProcess
                 if base_cmd.startswith('bsub')
                 else partial(Popen, shell=True))
+  if not params:
+    yield Job(base_cmd, output_path_pname, output_path, {}, process_fn)
   for combination in product(*params.values()):
     combination_params = dict(zip(params.keys(), combination))
     yield Job(base_cmd, output_path_pname, output_path, combination_params,
