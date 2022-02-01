@@ -39,13 +39,13 @@ def main():
       elif return_code == 0:
         finished_ok.add(job)
         jobs.remove(job)
-      # Job needs more time to run, relaunch.
-      elif return_code == 140:
-        job.launch()
-      # Job failed.
-      else:
+      # Job crashed due to user error.
+      elif return_code == 1:
         failed.add(job)
         jobs.remove(job)
+      # Unknown crash, re-try.
+      else:
+        job.launch()
   print('Done...!')
   if finished_ok:
     print('The following jobs finished successfully:', *finished_ok, sep='\n')
