@@ -35,6 +35,7 @@ class Job:
                    self.params.items()))
     cmd = cmd[:-1]
     self.process = self.process_fn(cmd)
+    print("Launched {}".format(self.__repr__()))
 
   @check_processs
   def poll(self):
