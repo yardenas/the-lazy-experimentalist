@@ -45,7 +45,6 @@ def main():
       return_code = job.poll()
       # Job is still running, let it run.
       if return_code is None:
-        print("{} is still running.".format(job))
         continue
       # Job finished ok, add to finished jobs.
       elif return_code == 0:
@@ -60,6 +59,8 @@ def main():
       # Unknown crash, re-try.
       else:
         job.launch()
+    print("Running jobs: {}\nFailed jobs: {}\nFinished jobs {}:"
+          .format(len(jobs), len(failed), len(finished_ok)))
   print('Done...!')
   if finished_ok:
     print('The following jobs finished successfully:', *finished_ok, sep='\n')
