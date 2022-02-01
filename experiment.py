@@ -13,7 +13,7 @@ def main():
                       help='The script\'s output path parameter name')
   parser.add_argument('--base_output_path', required=True,
                       help='Where to log the script\'s output.')
-  parser.add_argument('-p', '--params', type=ast.literal_eval, default={'': []},
+  parser.add_argument('-p', '--params', type=ast.literal_eval, default=dict(),
                       help='A python-typed dictionary that maps between a '
                            'parameter name and all of it\'s wanted possible '
                            'values')
