@@ -41,7 +41,7 @@ def main():
                 lambda sig, frame: signal_handler(sig, frame, jobs))
   while jobs:
     time.sleep(60)
-    for job in jobs:
+    for job in list(jobs):
       return_code = job.poll()
       # Job is still running, let it run.
       if return_code is None:
