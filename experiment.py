@@ -10,7 +10,7 @@ from lazy_experimentalist.jobs_generator import generate_jobs
 def signal_handler(sig, frame, jobs):
   for job in jobs:
     print("Closing {}".format(job))
-    job.close()
+    job.close(300)
   sys.exit(0)
 
 
