@@ -4,6 +4,16 @@ from subprocess import TimeoutExpired
 from typing import Optional, Callable, Any
 
 
+def check_processs(fun: Callable) -> Callable:
+  def wrap(job, *args, **kwargs):
+    if job.process is not None:
+      fun(*args, **kwargs)
+    else:
+      print("Job: {} was not launched yet.".format(job))
+
+  return wrap
+
+
 @dataclass
 class Job:
   base_cmd: str
@@ -25,14 +35,6 @@ class Job:
                    self.params.items()))
     cmd = cmd[:-1]
     self.process = self.process_fn(cmd)
-
-  def check_processs(self, fun: Callable) -> Callable:
-    def wrap(*args, **kwargs):
-      if self.process is not None:
-        fun(*args, **kwargs)
-      else:
-        print("Job: {} was not launched yet.".format(self.__repr__()))
-    return wrap
 
   @check_processs
   def poll(self):
