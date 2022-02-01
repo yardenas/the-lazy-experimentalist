@@ -34,6 +34,7 @@ def main():
       return_code = job.poll()
       # Job is still running, let it run.
       if return_code is None:
+        print("Job {} is still running.".format(job))
         continue
       # Job finished ok, add to finished jobs.
       elif return_code == 0:
