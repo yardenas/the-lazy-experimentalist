@@ -52,4 +52,4 @@ class Job:
       self.process.terminate()
 
   def __hash__(self):
-    return hash(self.params)
+    return hash(tuple(sorted(self.params)))
