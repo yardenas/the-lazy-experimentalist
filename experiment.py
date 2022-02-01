@@ -53,6 +53,7 @@ def main():
         jobs.remove(job)
       # Job crashed due to user error.
       elif return_code == 1:
+        print("Job {} crashed!".format(job))
         failed.add(job)
         jobs.remove(job)
       # Unknown crash, re-try.
