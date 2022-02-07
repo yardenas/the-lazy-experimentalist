@@ -1,17 +1,8 @@
 import argparse
 import ast
-import signal
-import sys
 import time
 
 from lazy_experimentalist.jobs_generator import generate_jobs
-
-
-def signal_handler(sig, frame, jobs):
-  for job in jobs:
-    print("Closing {}".format(job))
-    job.close(300)
-  sys.exit(0)
 
 
 def main():
@@ -37,8 +28,6 @@ def main():
     job.launch()
   finished_ok = set()
   failed = set()
-  signal.signal(signal.SIGINT,
-                lambda sig, frame: signal_handler(sig, frame, jobs))
   while jobs:
     time.sleep(60)
     for job in list(jobs):
