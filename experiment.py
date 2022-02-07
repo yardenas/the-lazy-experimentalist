@@ -48,7 +48,7 @@ def main():
       # Unknown crash, re-try.
       else:
         job.launch()
-    print("Running jobs: {}\nFailed jobs: {}\nFinished jobs {}:"
+    print("Running jobs: {}\nFailed jobs: {}\nFinished jobs: {}"
           .format(len(jobs), len(failed), len(finished_ok)))
   print('Done...!')
   if finished_ok:
