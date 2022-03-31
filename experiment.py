@@ -41,7 +41,7 @@ def main():
         finished_ok.add(job)
         jobs.remove(job)
       # Job crashed due to user error.
-      elif return_code == 1:
+      elif return_code in [1, 2]:
         print("{} crashed!".format(job))
         failed.add(job)
         jobs.remove(job)
