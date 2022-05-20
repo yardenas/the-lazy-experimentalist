@@ -28,33 +28,37 @@ def main():
     job.launch()
   finished_ok = set()
   failed = set()
-  while jobs:
-    time.sleep(60)
-    for job in list(jobs):
-      return_code = job.poll()
-      # Job is still running, let it run.
-      if return_code is None:
-        continue
-      # Job finished ok, add to finished jobs.
-      elif return_code == 0:
-        print("{} finished successfully".format(job))
-        finished_ok.add(job)
-        jobs.remove(job)
-      # Job crashed due to user error.
-      elif return_code in [1, 2]:
-        print("{} crashed!".format(job))
-        failed.add(job)
-        jobs.remove(job)
-      # Unknown crash, re-try.
-      else:
-        job.launch()
-    print("Running jobs: {}\nFailed jobs: {}\nFinished jobs: {}"
-          .format(len(jobs), len(failed), len(finished_ok)))
-  print('Done...!')
-  if finished_ok:
-    print('The following jobs finished successfully:', *finished_ok, sep='\n')
-  if failed:
-    print('The following jobs failed:', *failed, sep='\n')
+  try:
+    while jobs:
+      time.sleep(60)
+      for job in list(jobs):
+        return_code = job.poll()
+        # Job is still running, let it run.
+        if return_code is None:
+          continue
+        # Job finished ok, add to finished jobs.
+        elif return_code == 0:
+          print("{} finished successfully".format(job))
+          finished_ok.add(job)
+          jobs.remove(job)
+        # Job crashed due to user error.
+        elif return_code in [1, 2]:
+          print("{} crashed!".format(job))
+          failed.add(job)
+          jobs.remove(job)
+        # Unknown crash, re-try.
+        else:
+          job.launch()
+      print("Running jobs: {}\nFailed jobs: {}\nFinished jobs: {}"
+            .format(len(jobs), len(failed), len(finished_ok)))
+    print('Done...!')
+    if finished_ok:
+      print('The following jobs finished successfully:', *finished_ok, sep='\n')
+    if failed:
+      print('The following jobs failed:', *failed, sep='\n')
+  except KeyboardInterrupt:
+    for job in jobs:
+      job.close()
 
 
 if __name__ == '__main__':

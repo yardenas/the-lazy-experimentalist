@@ -6,6 +6,7 @@ from typing import Union
 
 
 class BsubProcess:
+
   def __init__(self, cmd: str):
     p = sp.Popen(cmd, shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
     p.wait()
@@ -22,19 +23,17 @@ class BsubProcess:
     self.job_id = res.split("<", 1)[1].split(">", 1)[0]
 
   def poll(self) -> Union[int, None]:
-    job_info = (sp.check_output(["bjobs", "-w", self.job_id])
-      .decode()
-      .strip()
-      .split('\n')[1])
+    job_info = (
+        sp.check_output(["bjobs", "-w",
+                         self.job_id]).decode().strip().split('\n')[1])
     print("Job info {}".format(job_info))
     if job_info.split(None, 7)[2] in ['RUN', 'PEND']:
       return None
     if job_info.split(None, 7)[2] == 'DONE':
       return 0
     elif job_info.split(None, 7)[2] == 'EXIT':
-      verbose_info = (sp.check_output(["bjobs", "-l", self.job_id])
-                      .decode()
-                      .strip())
+      verbose_info = (
+          sp.check_output(["bjobs", "-l", self.job_id]).decode().strip())
       exit_str = 'Exited with exit code'
       error_code_start_idx = verbose_info.find(exit_str) + len(exit_str) + 1
       error_code_end_idx = error_code_start_idx
