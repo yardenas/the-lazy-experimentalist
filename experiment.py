@@ -58,7 +58,7 @@ def main():
       print('The following jobs failed:', *failed, sep='\n')
   except KeyboardInterrupt:
     for job in jobs:
-      job.close()
+      job.close(1)
 
 
 if __name__ == '__main__':
