@@ -42,10 +42,10 @@ class BsubProcess:
       return int(verbose_info[error_code_start_idx:error_code_end_idx])
 
   def wait(self, timeout=None) -> int:
-    with _timeout(timeout) as timeout_notifier:
+    with _timeout(timeout) as timed_out:
       while True:
         return_code = self.poll()
-        if return_code is None and not timeout_notifier():
+        if return_code is None and not timed_out:
           time.sleep(60)
         else:
           return return_code
