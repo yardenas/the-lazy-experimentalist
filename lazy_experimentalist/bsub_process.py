@@ -45,7 +45,7 @@ class BsubProcess:
     with _timeout(timeout) as timed_out:
       while True:
         return_code = self.poll()
-        if return_code is None and not timed_out:
+        if return_code is None and not timed_out():
           time.sleep(60)
         else:
           return return_code
@@ -65,6 +65,6 @@ def _timeout(timeout):
       return False
 
   try:
-    yield nudger()
+    yield nudger
   finally:
     pass
