@@ -42,14 +42,7 @@ class Job:
     return self.process.poll()
 
   @check_processs
-  def close(self, wait: float):
-    try:
-      rc = self.process.wait(wait)
-      print("Closed Job: {} successfuly. Return code is: {}"
-            .format(self.__repr__(), rc))
-    except TimeoutExpired:
-      print("Timed out while waiting for job: {}. Terminating it..."
-            .format(self.__repr__()))
+  def close(self):
       self.process.terminate()
 
   def __hash__(self):
