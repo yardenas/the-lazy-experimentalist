@@ -1,10 +1,10 @@
-from subprocess import Popen
 from functools import partial
 from itertools import product
+from subprocess import Popen
 from typing import Generator
 
-from lazy_experimentalist.job import Job
 from lazy_experimentalist.bsub_process import BsubProcess
+from lazy_experimentalist.job import Job
 
 
 def generate_jobs(

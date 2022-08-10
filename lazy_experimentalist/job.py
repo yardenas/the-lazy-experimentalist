@@ -1,6 +1,5 @@
 import os.path as path
 from dataclasses import dataclass
-from subprocess import TimeoutExpired
 from typing import Optional, Callable, Any
 
 
