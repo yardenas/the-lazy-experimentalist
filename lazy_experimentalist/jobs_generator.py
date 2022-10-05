@@ -19,6 +19,7 @@ def generate_jobs(
       'Params should be a dictionary of lists or tuple of parameter '
       'possilibities.'
     )
+  base_cmd = base_cmd.strip()
   process_fn = (BsubProcess
                 if base_cmd.startswith('bsub')
                 else partial(Popen, shell=True))
