@@ -1,32 +1,43 @@
 from functools import partial
 from itertools import product
 from subprocess import Popen
-from typing import Generator
+from typing import Any, Callable, Generator, Type, Union
 
 from lazy_experimentalist.bsub_process import BsubProcess
+from lazy_experimentalist.slurm_process import SlurmProcess
 from lazy_experimentalist.job import Job
 
 
-def generate_jobs(
+def map_command_to_scheduler(
     base_cmd: str,
-    output_path_pname: str,
-    output_path: str,
-    params: dict
+) -> Union[Type[BsubProcess], partial, Type[SlurmProcess]]:
+    if base_cmd.startswith("bsub"):
+        return BsubProcess
+    elif base_cmd.startswith("sbatch"):
+        return SlurmProcess
+    else:
+        return partial(Popen, shell=True)
+
+
+def generate_jobs(
+    base_cmd: str, output_path_pname: str, output_path: str, params: dict
 ) -> Generator[Job, None, None]:
-  if not all(isinstance(val, list) or isinstance(val, tuple) for
-             val in params.values()):
-    raise ValueError(
-      'Params should be a dictionary of lists or tuple of parameter '
-      'possilibities.'
-    )
-  base_cmd = base_cmd.strip()
-  process_fn = (BsubProcess
-                if base_cmd.startswith('bsub')
-                else partial(Popen, shell=True))
-  if not params:
-    yield Job(base_cmd, output_path_pname, output_path, {}, process_fn)
-    return
-  for combination in product(*params.values()):
-    combination_params = dict(zip(params.keys(), combination))
-    yield Job(base_cmd, output_path_pname, output_path, combination_params,
-              process_fn)
+    if not all(
+        isinstance(val, list) or isinstance(val, tuple) for val in params.values()
+    ):
+        raise ValueError(
+            "Params should be a dictionary of lists or tuple of parameter "
+            "possilibities."
+        )
+    base_cmd = base_cmd.strip()
+    process_fn: Union[
+        Type[BsubProcess], partial, Type[SlurmProcess]
+    ] = map_command_to_scheduler(base_cmd)
+    if not params:
+        yield Job(base_cmd, output_path_pname, output_path, {}, process_fn)
+        return
+    for combination in product(*params.values()):
+        combination_params = dict(zip(params.keys(), combination))
+        yield Job(
+            base_cmd, output_path_pname, output_path, combination_params, process_fn
+        )
