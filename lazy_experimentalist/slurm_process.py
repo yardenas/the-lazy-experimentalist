@@ -24,7 +24,7 @@ class SlurmProcess:
         job_info = (
             sp.check_output(["squeue", "-j", self.job_id, '-o', '\"%t\"', '-h'])
             .decode()
-            .strip()
+            .strip('\"')
         )
         print("Job info {}".format(job_info))
         if job_info == "CD":
