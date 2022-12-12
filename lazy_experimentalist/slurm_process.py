@@ -12,7 +12,8 @@ class SlurmProcess:
         if not match:
             raise RuntimeError('Please specify base command within wrap')
         params = cmd[match.end():].strip()
-        new_cmd = match.group(0).replace(match.group(1), match.group(1) + params)
+        new_wrap = match.group(0).replace(match.group(1), match.group(1) + params)
+        new_cmd = cmd.replace(match.group(0), new_wrap)
         p = sp.Popen(new_cmd, shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
         p.wait()
         res = p.stdout.read().strip().decode("utf-8", "replace")  # type: ignore
