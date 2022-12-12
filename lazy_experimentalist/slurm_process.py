@@ -10,10 +10,12 @@ class SlurmProcess:
         # Make sure that the new parameters are within `wrap`
         match = re.search("wrap='([^']*)'", cmd)
         if not match:
-            raise RuntimeError('Please specify base command within wrap')
-        params = cmd[match.end():].strip()
+            raise RuntimeError(
+                "Please specify base command within wrap parameter of Slurm"
+            )
+        params = cmd[match.end() :]
         new_wrap = match.group(0).replace(match.group(1), match.group(1) + params)
-        new_cmd = cmd.replace(match.group(0), new_wrap)
+        new_cmd = cmd[: match.start()] + new_wrap
         p = sp.Popen(new_cmd, shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
         p.wait()
         res = p.stdout.read().strip().decode("utf-8", "replace")  # type: ignore
@@ -30,9 +32,9 @@ class SlurmProcess:
 
     def poll(self) -> Optional[int]:
         job_info = (
-            sp.check_output(["squeue", "-j", self.job_id, '-o', '\"%t\"', '-h'])
+            sp.check_output(["squeue", "-j", self.job_id, "-o", '"%t"', "-h"])
             .decode()
-            .strip('\"')
+            .strip('"')
         )
         print("Job info {}".format(job_info))
         if job_info == "CD":
