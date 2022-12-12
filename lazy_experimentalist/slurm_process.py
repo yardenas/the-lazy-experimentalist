@@ -2,11 +2,18 @@ import subprocess as sp
 import sys
 import time
 from typing import Optional
+import re
 
 
 class SlurmProcess:
     def __init__(self, cmd: str):
-        p = sp.Popen(cmd, shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
+        # Make sure that the new parameters are within `wrap`
+        match = re.search("wrap='([^']*)'", cmd)
+        if not match:
+            raise RuntimeError('Please specify base command within wrap')
+        params = cmd[match.end():].strip()
+        new_cmd = match.group(0).replace(match.group(1), match.group(1) + params)
+        p = sp.Popen(new_cmd, shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
         p.wait()
         res = p.stdout.read().strip().decode("utf-8", "replace")  # type: ignore
         err = p.stderr.read().strip().decode("utf-8", "replace")  # type: ignore
