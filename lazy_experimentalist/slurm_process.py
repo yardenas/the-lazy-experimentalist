@@ -36,7 +36,6 @@ class SlurmProcess:
             .decode()
             .strip('"')
         )
-        print("Job info {}".format(job_info))
         if job_info == "CD":
             return 0
         elif job_info in ["F", "NF", "OOM", "SI", "SE"]:
