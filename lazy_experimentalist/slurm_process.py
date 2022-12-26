@@ -41,7 +41,7 @@ class SlurmProcess:
                 .split("\n", 1)[0]
                 .split("|")[:2]
             )
-
+            exit_code = exit_code.split(':')[0]
         except sp.CalledProcessError as e:
             print(e)
             return None
