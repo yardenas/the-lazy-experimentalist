@@ -1,11 +1,11 @@
 from functools import partial
 from itertools import product
 from subprocess import Popen
-from typing import Any, Callable, Generator, Type, Union
+from typing import Generator, Type, Union
 
 from lazy_experimentalist.bsub_process import BsubProcess
-from lazy_experimentalist.slurm_process import SlurmProcess
 from lazy_experimentalist.job import Job
+from lazy_experimentalist.slurm_process import SlurmProcess
 
 
 def map_command_to_scheduler(

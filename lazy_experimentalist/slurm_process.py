@@ -31,18 +31,24 @@ class SlurmProcess:
         self.job_id = res.rsplit(" ", 1)[1]
 
     def poll(self) -> Optional[int]:
-        job_info = (
-            sp.check_output(["squeue", "-j", self.job_id, "-o", '"%t"', "-h"])
-            .decode()
-            .strip('"')
-        )
-        if job_info == "CD":
-            return 0
-        elif job_info in ["F", "NF", "OOM", "SI", "SE"]:
-            return 1
-        elif job_info in ["TO", "DL", "PR"]:
-            return 140
-        return None
+        try:
+            exit_code, status = (
+                sp.check_output(
+                    ["sacct", "-j", "5139349", "-o", "ExitCode,State", "-n", "-p"]
+                )
+                .decode()
+                .strip('""')
+                .split("\n", 1)[0]
+                .split("|")[:2]
+            )
+
+        except sp.CalledProcessError as e:
+            print(e)
+            return None
+        if status == "RUNNING":
+            return None
+        else:
+            return int(exit_code)
 
     def wait(self, _) -> int:
         while True:
