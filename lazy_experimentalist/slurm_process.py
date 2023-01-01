@@ -34,7 +34,7 @@ class SlurmProcess:
         try:
             exit_code, status = (
                 sp.check_output(
-                    ["sacct", "-j", "5139349", "-o", "ExitCode,State", "-n", "-p"]
+                    ["sacct", "-j", self.job_id, "-o", "ExitCode,State", "-n", "-p"]
                 )
                 .decode()
                 .strip('""')
