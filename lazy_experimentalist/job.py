@@ -1,16 +1,6 @@
 import os.path as path
 from dataclasses import dataclass
-from typing import Optional, Callable, Any
-
-
-def check_processs(fun: Callable) -> Callable:
-    def wrap(job, *args, **kwargs):
-        if job.process is not None:
-            return fun(job, *args, **kwargs)
-        else:
-            print("Job: {} was not launched yet.".format(job))
-
-    return wrap
+from typing import Dict, Optional, Callable, Any
 
 
 @dataclass
@@ -18,7 +8,7 @@ class Job:
     base_cmd: str
     output_path_pname: str
     output_path: str
-    params: dict
+    params: Dict[str, Any]
     process_fn: Callable[[str], Any]
     process: Optional[Any] = None
 
@@ -40,12 +30,12 @@ class Job:
         self.process = self.process_fn(cmd)
         print("Launched {}".format(self.__repr__()))
 
-    @check_processs
     def poll(self):
+        assert self.process
         return self.process.poll()
 
-    @check_processs
     def close(self):
+        assert self.process
         self.process.terminate()
 
     def __hash__(self):
