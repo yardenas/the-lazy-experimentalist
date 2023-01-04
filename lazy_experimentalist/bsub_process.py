@@ -3,6 +3,8 @@ import sys
 import time
 from typing import Optional
 
+from pyparsing import Any
+
 
 class BsubProcess:
     def __init__(self, cmd: str):
@@ -44,7 +46,7 @@ class BsubProcess:
             return int(verbose_info[error_code_start_idx:error_code_end_idx])
         return None
 
-    def wait(self, _) -> int:
+    def wait(self, _: Any) -> int:
         while True:
             return_code = self.poll()
             if return_code is None:
