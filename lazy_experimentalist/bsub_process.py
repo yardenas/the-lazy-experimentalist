@@ -1,9 +1,8 @@
+from typing import Any
 import subprocess as sp
 import sys
 import time
 from typing import Optional
-
-from pyparsing import Any
 
 
 class BsubProcess:
