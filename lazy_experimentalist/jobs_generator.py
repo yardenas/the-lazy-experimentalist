@@ -9,8 +9,8 @@ from lazy_experimentalist.slurm_process import SlurmProcess
 
 
 def map_command_to_scheduler(
-    base_cmd: str,
-) -> Union[Type[BsubProcess], partial[Popen[str]], Type[SlurmProcess]]:
+    base_cmd,
+):
     if base_cmd.startswith("bsub"):
         return BsubProcess
     elif base_cmd.startswith("sbatch"):
