@@ -47,6 +47,8 @@ class SlurmProcess:
             return None
         if status == "RUNNING":
             return None
+        elif status == "COMPLETED":
+            return 0
         else:
             return int(exit_code)
 
